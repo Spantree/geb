@@ -25,20 +25,25 @@ In Geb, waiting expressions and at expressions automatically use implicit assert
         }
     }
 
-This automatically becomes…
+This automatically kinda becomes…
 
     class ImplicitAssertionsExamplePage extends Page {
         
         static at = { assert title == "Implicit Assertions!"; title == "Implicit Assertions!" }
         
         static content = {
-            dynamicParagraph(wait: true) { assert $("p"); $("p") }
+            dynamicParagraph(wait: true) { 
+                assert $("p", 0).text() == "implicit assertions are cool!"
+                $("p", 0).text() == "implicit assertions are cool!"
+            }
         }
         
         def waitForHeading() {
             waitFor { assert $("h1"); $("h1") }
         }
     }
+
+The “kinda” part of this statement is due to the actual expression not being duplicated. It's only executed once. We capture the value, assert on it, and then return it.
 
 Because of this, Geb is able to provide much better error messages when the expression fails due to Groovy's [power asserts](http://dontmindthelanguage.wordpress.com/2009/12/11/groovy-1-7-power-assert/).
 
